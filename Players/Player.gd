@@ -1,9 +1,10 @@
 extends KinematicBody2D
 
 var motion = Vector2(0, 100)
-export var SPEED = 100
+export var SPEED = 700
 export var gravity = 10
 export var jump_power = 1000
+var jump_count = 0
 
 func _physics_process(delta):
 	
@@ -11,7 +12,7 @@ func _physics_process(delta):
 	jump()
 	walk()
 	
-	move_and_slide(motion, Vector2( 0, 1))
+	move_and_slide(motion, Vector2( 0, -1))
 	
 func apply_gravity():
 	if is_on_floor():
@@ -20,9 +21,13 @@ func apply_gravity():
 		motion.y = motion.y + gravity
 	
 func jump():
-	if Input.is_action_just_pressed("jump"):
-		motion.y = -jump_power
-		
+	if jump_count < 1:
+		if Input.is_action_just_pressed("jump"):
+			motion.y = -jump_power
+			jump_count = jump_count + 1
+	if is_on_floor():
+		jump_count = 0
+			
 func walk():
 
 	if Input.is_action_pressed("left") and not Input.is_action_pressed("right"):
